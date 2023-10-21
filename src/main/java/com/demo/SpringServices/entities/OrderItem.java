@@ -1,29 +1,31 @@
 package com.demo.SpringServices.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+
 @Entity
 @Table(name = "tb_order_item")
-public class OrdemItem implements Serializable {
+public class OrderItem implements Serializable {
 
-	
 	private static final long serialVersionUID = 1L;
 
-	
 	@EmbeddedId
-	private OrderItemPK id;
+	private OrderItemPK id = new OrderItemPK();
 
 	private Integer quantity;
 	private Double price;
 
-	public OrdemItem() {
+	public OrderItem() {
 
 	}
 
-	public OrdemItem(Order order, Product product, Integer quantity, Double price) {
+	public OrderItem(Order order, Product product, Integer quantity, Double price) {
 		super();
 		id.setOrder(order);
 		id.setProduct(product);
@@ -32,7 +34,7 @@ public class OrdemItem implements Serializable {
 
 	}
 
-	public OrdemItem(OrderItemPK id) {
+	public OrderItem(OrderItemPK id) {
 		super();
 		this.id = id;
 	}
@@ -53,6 +55,7 @@ public class OrdemItem implements Serializable {
 		this.price = price;
 	}
 
+	@JsonIgnore
 	public Order getOrder() {
 		return id.getOrder();
 	}
@@ -60,14 +63,31 @@ public class OrdemItem implements Serializable {
 	public void setOrder(Order order) {
 		id.setOrder(order);
 	}
+
 	
 	public Product getProduct() {
 		return id.getProduct();
 	}
 
-	public void setProduct(Order product) {
-		id.setOrder(product);
+	public void setProduct(Product product) {
+		id.setProduct(product);
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OrderItem other = (OrderItem) obj;
+		return Objects.equals(id, other.id);
+	}
 
 }
