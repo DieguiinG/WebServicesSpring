@@ -10,6 +10,8 @@ import com.demo.SpringServices.entities.User;
 import com.demo.SpringServices.repositories.UserRepository;
 import com.demo.SpringServices.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class UserServices {
 	
@@ -30,5 +32,23 @@ public class UserServices {
 	
 	public void delete(Long id){
 		repository.deleteById(id);
+	}
+	
+	public User update(	Long id, User obj){
+		try {
+		User entity = repository.getReferenceById(id);
+		updateDate(entity, obj);
+		return repository.save(entity);
+		} catch(EntityNotFoundException e){
+			e.printStackTrace();
+			throw new ResourceNotFoundException(id);
+		}
+		
+	}
+
+	private void updateDate(User entity, User obj) {
+		entity.setName(obj.getName());
+		entity.setEmail(obj.getEmail());
+		entity.setPhone(obj.getPhone());
 	}
 }
